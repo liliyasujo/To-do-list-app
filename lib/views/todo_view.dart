@@ -3,6 +3,7 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:task_manager/adapters/todo_adapter.dart';
 import 'package:task_manager/views/add_todo.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class TodoView extends StatelessWidget {
   @override
@@ -36,7 +37,18 @@ class TodoView extends StatelessWidget {
               itemBuilder: (context, index) {
                 Todo? todo = box.getAt(index);
                 return ListTile(
-                  leading: Icon(Icons.calendar_today_outlined),
+                  leading: IconButton(
+                      icon: Icon(
+                        Icons.calendar_today_outlined,
+                      ),
+                      onPressed: () async {
+                        const url = 'https://www.google.com/';
+                        if (await canLaunch(url)) {
+                          await launch(url);
+                        } else {
+                          throw 'Could not launch $url';
+                        }
+                      }),
                   onLongPress: () async {
                     await box.deleteAt(index);
                   },
@@ -48,7 +60,6 @@ class TodoView extends StatelessWidget {
                     todo.description,
                     style: TextStyle(fontSize: 16, fontFamily: 'Montserrat'),
                   ),
-                  
                 );
               });
         },
